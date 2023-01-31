@@ -175,19 +175,25 @@ Ajoutez un tableau composé des styles «techno» et « reggae » à la salle do
 
 Pour les salles dont le nom commence par la lettre P (majuscule ou minuscule), augmentez la capacité de 150 places et rajoutez un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone dont la valeur sera « 04 11 94 00 10 ».
 
-` `
+`db.salles.updateMany({ nom: { $regex: /^p/i } }, { $inc: { capacite: 150 }, $push: {contact: {telephone: "04 11 94 00 10"} }})`
 
 ### Exercice 19
 
 Pour les salles dont le nom commence par une voyelle (peu importe la casse, là aussi), rajoutez dans le tableau avis un document composé du champ date valant la date courante et du champ note valant 10 (double ou entier). L’expression régulière pour chercher une chaîne de caractères débutant par une voyelle suivie de n’importe quoi d’autre est [^aeiou]+$.
 
+`db.salles.updateMany({ "nom": { "$regex": /^[^aeiou]+$/i } }, { "$addToSet": {"avis": {"date": new Date(),"note": 10}} })`
+
 ### Exercice 20
 
 En mode upsert, vous mettrez à jour tous les documents dont le nom commence par un z ou un Z en leur affectant comme nom « Pub Z », comme valeur du champ capacite 50 personnes (type entier et non décimal) et en positionnant le champ booléen smac à la valeur « false ».
 
+`db.salles.updateMany({ "nom": { "$regex": /^[zZ]/ } },{ "$set": {"nom": "Pub Z","capacite": 50,"smac": false} },{ "upsert": true })`
+
 ### Exercice 21
 
 Affichez le décompte des documents pour lesquels le champ _id est de type « objectId ».
+
+`db.salles.count({ "_id": { "$type": "objectId" } })`
 
 ### Exercice 22
 
